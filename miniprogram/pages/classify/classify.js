@@ -58,7 +58,7 @@ Page({
     that.setData({
       product:array
     })
-    // console.log(that.data.product)
+    console.log(that.data.product)
   },
   /**
    * 生命周期函数--监听页面加载

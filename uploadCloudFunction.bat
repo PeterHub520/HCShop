@@ -1,1 +1,1 @@
-"D:\WeChatDeveloperTools\Î¢ÐÅweb¿ª·¢Õß¹¤¾ß\cli.bat" cloud functions deploy --e cloud1-6g0yx3hi0dd04e91 --n quickstartFunctions --r --project "D:\wechat-app-EShop" --report_first --report
+"D:\WeChatDeveloperTools\Î¢ï¿½ï¿½webï¿½ï¿½ï¿½ï¿½ï¿½ß¹ï¿½ï¿½ï¿½\cli.bat" cloud fcloud1-6gnwx8yrf94c4823ud1-6g0yx3hi0dd04e91 --n quickstartFunctions --r --project "D:\wechat-app-EShop" --report_first --report

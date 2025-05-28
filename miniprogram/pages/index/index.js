@@ -14,9 +14,9 @@ Page({
    */
   data: {
     swiperList: [
-      'https://636c-cloud1-6g0yx3hi0dd04e91-1314458791.tcb.qcloud.la/swiper-pic1.jpg?sign=ebdec4ced599732336528eac2b704201&t=1666767642',
-      'https://636c-cloud1-6g0yx3hi0dd04e91-1314458791.tcb.qcloud.la/swiper-pic2.jpg?sign=2c9fbf816f42bdabea24d0b7423dd05d&t=1666767792',
-      'https://636c-cloud1-6g0yx3hi0dd04e91-1314458791.tcb.qcloud.la/swiper-pic3.jpg?sign=f69f0d23e9494f3886fb1cddd24e9b4a&t=1666767806'
+      'https://636c-cloud1-6gnwx8yrf94c4823-1314458791.tcb.qcloud.la/swiper-pic1.jpg?sign=ebdec4ced599732336528eac2b704201&t=1666767642',
+      'https://636c-cloud1-6gnwx8yrf94c4823-1314458791.tcb.qcloud.la/swiper-pic2.jpg?sign=2c9fbf816f42bdabea24d0b7423dd05d&t=1666767792',
+      'https://636c-cloud1-6gnwx8yrf94c4823-1314458791.tcb.qcloud.la/swiper-pic3.jpg?sign=f69f0d23e9494f3886fb1cddd24e9b4a&t=1666767806'
     ],
     msgList: [
       { url: "/miniprogram/pages/index/index.js", title: "<11·11>大牌新品推荐，折扣+满减，想不到的低价等你来抢" },

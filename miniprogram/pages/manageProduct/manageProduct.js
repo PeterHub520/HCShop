@@ -30,6 +30,91 @@ Page({
         })
     },
 
+    // 删除商品项
+    onDeleteItem(e) {
+        const {
+            id,
+            image
+        } = e.currentTarget.dataset;
+        const that = this;
+
+        wx.showModal({
+            title: '确认删除',
+            content: '确定要删除这个商品吗？',
+            success(res) {
+                if (res.confirm) {
+                    wx.showLoading({
+                        title: '删除中...'
+                    });
+
+                    // 1. 删除数据库记录
+                    db.collection('product_shopping').doc(id).remove({
+                        success() {
+                            // 2. 删除云存储图片
+                            if (image) {
+                                wx.cloud.deleteFile({
+                                    fileList: [image],
+                                    success() {
+                                        wx.hideLoading();
+                                        that.refreshData(); // 刷新数据
+                                        wx.showToast({
+                                            title: '删除成功'
+                                        });
+                                    },
+                                    fail(err) {
+                                        console.error('图片删除失败:', err);
+                                        wx.hideLoading();
+                                        that.refreshData(); // 仍然刷新数据
+                                        wx.showToast({
+                                            title: '商品已删除，但图片删除失败',
+                                            icon: 'none'
+                                        });
+                                    }
+                                });
+                            } else {
+                                wx.hideLoading();
+                                that.refreshData(); // 刷新数据
+                                wx.showToast({
+                                    title: '删除成功'
+                                });
+                            }
+                        },
+                        fail(err) {
+                            console.error('删除失败:', err);
+                            wx.hideLoading();
+                            wx.showToast({
+                                title: '删除失败',
+                                icon: 'none'
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    },
+
+    // 编辑商品项
+    onEditItem(e) {
+        const that = this;
+        const id = e.currentTarget.dataset.id; // 获取商品ID
+        const products = that.data.product; // 获取商品列表
+
+        // 查找要编辑的商品
+        let productToEdit = {};
+        for (let i = 0; i < products.length; i++) {
+            if (products[i]._id === id) {
+                productToEdit = products[i];
+                break;
+            }
+        }
+
+        console.log('要编辑的商品:', productToEdit);
+
+        // 跳转到编辑页面并传递商品数据
+        wx.redirectTo({
+            url: '../addProduct/addProduct?data=' + encodeURIComponent(JSON.stringify(productToEdit)),
+        });
+    },
     delete(res) {
         var that = this;
         var id = res.currentTarget.dataset.id;

@@ -93,28 +93,28 @@ Page({
         });
     },
 
-    // 编辑商品项
-    onEditItem(e) {
-        const that = this;
-        const id = e.currentTarget.dataset.id; // 获取商品ID
-        const products = that.data.product; // 获取商品列表
-
-        // 查找要编辑的商品
-        let productToEdit = {};
-        for (let i = 0; i < products.length; i++) {
-            if (products[i]._id === id) {
-                productToEdit = products[i];
-                break;
-            }
-        }
-
-        console.log('要编辑的商品:', productToEdit);
-
-        // 跳转到编辑页面并传递商品数据
-        wx.redirectTo({
-            url: '../addProduct/addProduct?data=' + encodeURIComponent(JSON.stringify(productToEdit)),
+ 
+  // 编辑商品项
+onEditItem(e) {
+    const productId = e.currentTarget.dataset.id;
+    const productList = this.data.product;
+    
+    // 直接通过ID查找商品
+    const productToEdit = productList.find(item => item._id === productId);
+    
+    if (!productToEdit) {
+        wx.showToast({
+            title: '未找到商品信息',
+            icon: 'none'
         });
-    },
+        return;
+    }
+
+    // 跳转到编辑页面
+    wx.navigateTo({
+        url: `../addProduct/addProduct?id=${productId}&data=${encodeURIComponent(JSON.stringify(productToEdit))}`,
+    });
+},
     delete(res) {
         var that = this;
         var id = res.currentTarget.dataset.id;

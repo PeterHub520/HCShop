@@ -23,6 +23,14 @@ Page({
     })
   },
 
+   // 跳转到购物车页面
+   goToCart() {
+    console.log('点击了购物车按钮，准备跳转');
+    wx.navigateTo({
+      url: '../cart/cart',
+    });
+  },
+
   // 评论
   getuserinfo(res){
     var that = this;

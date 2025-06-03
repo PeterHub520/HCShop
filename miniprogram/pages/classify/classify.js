@@ -6,60 +6,68 @@ Page({
    * 页面的初始数据
    */
   data: {
-    left_name: [
-      {id: 1,name: '女装'},
-      {id: 2,name: '女鞋'},
-      {id: 3,name: '美妆'},
-      {id: 4,name: '男装'},
-      {id: 5,name: '数码产品'},
-      {id: 6,name: '家用产品'},
-      {id: 7,name: '食品'},
-      {id: 8,name: '医药'},
-      {id: 9,name: '其它'}
-    ],
-    all:[],
-    product:[],
-    id:0,
-    num:0,
-    name:''
+    left_name: [], // 动态存储分类数据
+    all: [],
+    product: [],
+    id: 0,
+    num: 0,
+    name: ''
   },
 
   // 跳转商品详情页
-  GoToProduct(res){
+  GoToProduct(res) {
     var that = this;
     var id = res.currentTarget.dataset.id;
     console.log(id);
     wx.navigateTo({
-      url: '../product/product?id='+id,
+      url: '../product/product?id=' + id,
     })
   },
 
   // 显示对应分类的商品
-  selectId(res){
+  selectId(res) {
     var that = this;
     var name = res.currentTarget.dataset.name;
-    var name_1 = '';
     var array = [];
-    // console.log(name);
     that.setData({
-      name:name
+      name: name
     })
-    // for(var i = 0; i < that.data.left_name.length;i++){
-    //   if(that.data.left_name[i].name == name){
-    //     console.log("当前选择的分类是",that.data.left_name[i].name)
-    //     name_1 = that.data.left_name[i].name;
-    //   }
-    // }
-    for(var j = 0; j < that.data.all.length; j++){
-      if(that.data.all[j].fenlei == name){
+    for (var j = 0; j < that.data.all.length; j++) {
+      if (that.data.all[j].fenlei == name) {
         array.push(that.data.all[j]);
       }
     }
     that.setData({
-      product:array
+      product: array
     })
     console.log(that.data.product)
   },
+
+  // 获取所有分类数据
+  getCategories() {
+    var that = this;
+    db.collection('product_shopping').field({
+      fenlei: true
+    }).get({
+      success: function (res) {
+        var categories = [];
+        var categoryMap = {};
+        res.data.forEach(item => {
+          if (!categoryMap[item.fenlei]) {
+            categoryMap[item.fenlei] = true;
+            categories.push({ name: item.fenlei });
+          }
+        });
+        that.setData({
+          left_name: categories
+        });
+      },
+      fail: function (err) {
+        console.error('获取分类数据失败', err);
+      }
+    });
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -70,61 +78,53 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
-    if(name == ''){
+
+    // 获取所有分类数据
+    that.getCategories();
+
+    if (name == '') {
       console.log("执行if");
       wx.cloud.callFunction({
-        name:'findProduct',
-        success(res){
+        name: 'findProduct',
+        success(res) {
           that.setData({
-            product:res.result.data,
-            all:res.result.data
+            product: res.result.data,
+            all: res.result.data
           })
           wx.hideLoading({
-            success: (res) => {},
+            success: (res) => { },
           })
-          // console.log('结果', res.data);
-          // console.log("所有商品为",that.data.product)
         }
       })
-    }else {
+    } else {
       console.log("执行else");
       that.setData({
-        name:name
+        name: name
       })
       wx.cloud.callFunction({
-        name:'findProduct',
-        success(res){
+        name: 'findProduct',
+        success(res) {
           that.setData({
-            product:res.result.data,
-            all:res.result.data
+            product: res.result.data,
+            all: res.result.data
           })
           wx.hideLoading({
-            success: (res) => {},
+            success: (res) => { },
           })
           console.log(that.data.product)
-          for(var i = 0; i < that.data.product.length; i++){
-            if(that.data.product[i].fenlei == name){
+          for (var i = 0; i < that.data.product.length; i++) {
+            if (that.data.product[i].fenlei == name) {
               console.log("-------")
               array.push(that.data.product[i]);
             }
           }
           console.log(array);
           that.setData({
-            product:array
+            product: array
           })
         }
       })
     }
-    // that.setData({
-    //   id:1
-    // })
-
-    // wx.cloud.callFunction({
-    //   name:'OpenId',
-    //   success(res){
-    //     console.log(res)
-    //   }
-    // })
   },
 
   /**

@@ -49,15 +49,20 @@
 
   <view class="image">
     <text>商品图片:</text>
-    <button class="add-picture-btn" type="primary" bindtap="getPicture">添加图片</button>
+    <button class="add-picture-btn" type="primary" bindtap="getPicture" disabled="{{isUploading}}">
+        {{isUploading ? '上传中...' : '添加图片'}}
+    </button>
     <image 
-      src="{{fileID}}" 
-      wx:if="{{fileID}}" 
-      mode="aspectFit" 
-      class="product-image"
+        src="{{fileID}}" 
+        wx:if="{{fileID}}" 
+        mode="aspectFit" 
+        class="product-image"
+        bindtap="previewImage"
     ></image>
-  </view>
-  
+    <view wx:if="{{isUploading}}" class="upload-progress">
+        上传进度: {{uploadProgress}}%
+    </view>
+</view>
   <button class="submit-btn" bindtap="submit">
     {{now === '修改' ? '更新商品' : '提交商品'}}
   </button>

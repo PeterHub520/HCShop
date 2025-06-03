@@ -1,15 +1,27 @@
-<!-- manageProduct.wxml -->
-<!-- 添加新增商品按钮 -->
 <view style="padding: 20rpx; text-align: center;">
     <van-button type="primary" bind:click="goToAddProduct">新增商品</van-button>
 </view>
 
-<view class="product" wx:for="{{product}}" wx:key="index">
-    <van-card price="{{ item.price }}" title="{{ item.name }}" thumb="{{ item.image }}">
+<view class="product" wx:for="{{product}}" wx:key="_id">
+    <van-card price="{{ item.price }}" title="{{ item.name }}" desc="{{ item.desc }}" thumb="{{ item.image }}">
         <view slot="footer">
-            <van-button data-id="{{item._id}}" data-image="{{item.image}}" data-item="{{item}}" bindtap="onDeleteItem" size="mini" type="danger" custom-style="margin-right: 10px">删除</van-button>
+            <van-button 
+                data-id="{{item._id}}" 
+                data-image="{{item.image}}" 
+                bindtap="onDeleteItem" 
+                size="mini" 
+                type="danger" 
+                custom-style="margin-right: 10px">
+                删除
+            </van-button>
 
-            <van-button data-item="{{item}}" bindtap="onEditItem" size="mini" type="primary">修改</van-button>
+            <van-button 
+                data-id="{{item._id}}" 
+                bindtap="onEditItem" 
+                size="mini" 
+                type="primary">
+                修改
+            </van-button>
         </view>
     </van-card>
 </view>

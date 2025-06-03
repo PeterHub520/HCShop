@@ -49,17 +49,17 @@
   </view>
 </scroll-view>
 
-<!-- <view class="bottom">
+<view class="bottom">
   <view class="bottom_left" bindtap="shoucang">
     <image src="{{shoucang[0]}}"></image>
     <text>收藏</text>
   </view>
   <view class="bottom_right" bindtap="addToShopping">加入购物车</view>
-</view> -->
+</view>
 
 <van-goods-action>
   <van-goods-action-icon icon="goods-collect-o" text="收藏" bind:click="shoucang" />
-  <van-goods-action-icon icon="cart-o" text="购物车" info="5" />
+  <!-- <van-goods-action-icon icon="cart-o" text="购物车" info="5" bind:click="goToCart" /> -->
   <van-goods-action-button color="#be99ff" text="加入购物车" type="warning" bind:click="addToShopping" />
-  <van-goods-action-button color="#7232dd" text="立即购买" />
+  <van-goods-action-button color="#7232dd" text="立即购买"  bind:click="addToShopping"  />
 </van-goods-action>

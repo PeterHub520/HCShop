@@ -30,87 +30,88 @@ Page({
     var token = wx.getStorageSync('__appUserInfo').token;
   },
 
-    getVipTap (e) {
-        var id = e.currentTarget.dataset.id;
-        var money = e.currentTarget.dataset.money;
-        var token = wx.getStorageSync('__appUserInfo').token;
-        var that = this;
-        wx.showModal({
-            title:'交易提示',
-            content:'确认支付'+that.data.vipMoney+'元?',
-            success(res){
-                if(res.confirm == true) {
-                    wx.getUserProfile({
-                        desc: '成为会员', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-                        success: (res) => {
-                          that.setData({
+  getVipTap (e) {
+    var id = e.currentTarget.dataset.id;
+    var money = e.currentTarget.dataset.money;
+    var token = wx.getStorageSync('__appUserInfo').token;
+    var that = this;
+    wx.showModal({
+        title:'交易提示',
+        content:'确认支付'+that.data.vipMoney+'元?',
+        success(res){
+            if(res.confirm == true) {
+                wx.getUserProfile({
+                    desc: '成为会员', 
+                    success: (res) => {
+                        that.setData({
                             nickName: res.userInfo.nickName,
                             avatarUrl: res.userInfo.avatarUrl
-                          })
-                          wx.setStorage({    //数据缓存方法
-                            key: 'nickName',   //关键字，本地缓存中指定的key
-                            data: res.userInfo.nickName,    //缓存微信用户公开信息，
-                            success: function() {      //缓存成功后，输出提示
-                              console.log('写入nickName缓存成功')
+                        })
+                        wx.setStorage({    
+                            key: 'nickName',   
+                            data: res.userInfo.nickName,    
+                            success: function() {      
+                                console.log('写入nickName缓存成功')
                             },
-                            fail: function() {        //缓存失败后的提示
-                              console.log('写入nickName发生错误')
+                            fail: function() {        
+                                console.log('写入nickName发生错误')
                             }
-                          })
-                          wx.setStorage({    //数据缓存方法
-                            key: 'avatarUrl',   //关键字，本地缓存中指定的key
-                            data: res.userInfo.avatarUrl,    //缓存微信用户公开信息，
-                            success: function() {      //缓存成功后，输出提示
-                              console.log('写入avatarUrl缓存成功')
+                        })
+                        wx.setStorage({    
+                            key: 'avatarUrl',   
+                            data: res.userInfo.avatarUrl,    
+                            success: function() {      
+                                console.log('写入avatarUrl缓存成功')
                             },
-                            fail: function() {        //缓存失败后的提示
-                              console.log('写入avatarUrl发生错误')
+                            fail: function() {        
+                                console.log('写入avatarUrl发生错误')
                             }
-                          })
-                            db.collection('member').add({
-                                data:{
-                                    openid: that.data.openid,
-                                    nickName: that.data.nickName,
-                                    avatarUrl: that.data.avatarUrl
-                                },
-                                success(res){
-                                    console.log("会员支付成功");
-                                    wx.showToast({
-                                        title: '支付成功',
-                                        duration:5000,
-                                        success(res){
-                                            wx.switchTab({
-                                                url: '../me/me',
-                                            })
-                                            wx.setStorage({    //数据缓存方法
-                                                key: 'MemberTrue',   //关键字，本地缓存中指定的key
-                                                data: app.globalData.isMember,    //缓存微信用户公开信息，
-                                                success: function() {      //缓存成功后，输出提示
-                                                  console.log('写入isMember缓存成功，成功记载该用户')
-                                                },
-                                                fail: function() {        //缓存失败后的提示
-                                                  console.log('写入isMember缓存失败')
-                                                }
-                                              })
-                                            that.setData({
-                                                isMember: true
-                                            })
-                                            app.globalData.isMember = true
-                                        }
-                                    })
-                                },
-                                fail(res){
+                        })
+                        db.collection('member').add({
+                            data:{
+                                openid: that.data.openid,
+                                nickName: that.data.nickName,
+                                avatarUrl: that.data.avatarUrl,
+                                isMember: true // 添加 isMember 字段并设为 true
+                            },
+                            success(res){
+                                console.log("会员支付成功");
+                                wx.showToast({
+                                    title: '支付成功',
+                                    duration:5000,
+                                    success(res){
+                                        wx.switchTab({
+                                            url: '../me/me',
+                                        })
+                                        wx.setStorage({    
+                                            key: 'MemberTrue',   
+                                            data: true,    
+                                            success: function() {      
+                                                console.log('写入isMember缓存成功，成功记载该用户')
+                                            },
+                                            fail: function() {        
+                                                console.log('写入isMember缓存失败')
+                                            }
+                                        })
+                                        that.setData({
+                                            isMember: true
+                                        })
+                                        app.globalData.isMember = true
+                                    }
+                                })
+                            },
+                            fail(res){
                                 console.log("会员支付失败",res);
-                                }
-                            })
-                        }
-                      })
-                }
-            },
-            fail(res){}
-        })
-        console.log('isMember', app.globalData.isMember);
-    },
+                            }
+                        })
+                    }
+                })
+            }
+        },
+        fail(res){}
+    })
+    console.log('isMember', app.globalData.isMember);
+},
     toDetailsTap: function toDetailsTap(e) {
         wx.navigateTo({
             url: "/pages/pages/goods/goods?id=" + e.currentTarget.dataset.id

@@ -38,7 +38,7 @@ App({
 
     this.globalData = {
       name: '',
-      isMember: true, // 会员
+      isMember: false, // 会员
       score: 0 // 会员积分
     };
   }

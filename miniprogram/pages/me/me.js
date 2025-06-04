@@ -1,4 +1,5 @@
-const app = getApp()
+const app = getApp();
+const db = wx.cloud.database();
 
 Page({
   /**
@@ -77,15 +78,34 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var isMember = app.globalData.isMember;
-    var score = app.globalData.score;
-    this.setData({
-      isMember: isMember,
-      score: score
+    var that = this;
+    var openid = app.globalData.openid; // 假设已经获取到用户的 openid
+    db.collection('member').where({
+        openid: openid
+    }).get({
+        success: function(res) {
+            console.log("----",res.data)
+            if (res.data.length > 0) {
+                var isMember = res.data[0].isMember;
+                var score = app.globalData.score;
+                that.setData({
+                    isMember: isMember,
+                    score: score
+                })
+                console.log('me组件下的isMember', isMember);
+                console.log('me组件下的score', score);
+            } else {
+                that.setData({
+                    isMember: false,
+                    score: app.globalData.score
+                })
+            }
+        },
+        fail: function(res) {
+            console.log('查询会员信息失败', res);
+        }
     })
-    console.log('me组件下的isMember', isMember);
-    console.log('me组件下的score', score);
-  },
+},
 
   /**
    * 生命周期函数--监听页面初次渲染完成

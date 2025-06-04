@@ -12,10 +12,10 @@ order：用于存储用户的订单信息。
 product_shopping：用于存储商品信息。
 collection：用于存储用户的收藏信息。
 points_shopping：用于存储积分商城的商品信息。
+product_categories：分类
 
 ## TODO
-- 新增商品，分类应该从数据库中获取后选择。另外现在点击修改，没有展示可以修改的数据
-pages/manageProduct/manageProduct
+-  你应该能够找出点击 “待收货” 跳转到 pages/member/member 页面的原因。
 
 
 

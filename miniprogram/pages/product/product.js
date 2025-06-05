@@ -138,13 +138,14 @@ Page({
   },
 
   // 加入购物车
-  addToShopping(res){
+  addToShopping(res) {
     var that = this;
     var id = that.data.array._id;
     var array = that.data.array;
     var x = 0;
+    
     db.collection('shopping_car').get({
-      success(res){
+      success(res) {
         console.log(res);
         for(var i = 0; i < res.data.length; i++){
           if(res.data[i]._openid == that.data.openid && res.data[i].id == that.data.array._id){
@@ -154,6 +155,7 @@ Page({
             x = 1;
           }
         }
+        
         if(x == 0){
           db.collection('shopping_car').add({
             data:{
@@ -170,7 +172,16 @@ Page({
               console.log("上传成功");
               wx.showToast({
                 title: '成功加入购物车',
-              })
+                duration: 1500, // 显示时间
+                success: function() {
+                  // 延迟执行返回操作，确保toast显示完成
+                  setTimeout(function() {
+                    wx.navigateBack({
+                      delta: 1 // 返回上一级页面
+                    });
+                  }, 1500);
+                }
+              });
             },
             fail(res){
               console.log("上传失败",res);

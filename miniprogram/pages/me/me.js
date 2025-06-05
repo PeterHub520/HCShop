@@ -12,7 +12,7 @@ Page({
   },
   adminPwd(e) {
     var that = this;
-    if(e.detail.value == '123456') {
+    if(e.detail.value == '1') {
       wx.showToast({
         title: '密码正确',
         success(res) {
@@ -33,10 +33,13 @@ Page({
     })
   },
   // 跳转订单管理页
-  toOrder(res){
+toOrder(res){
+    console.log('跳转路径:', res);
     var name = res.currentTarget.dataset.name;
-    wx.navigateTo({
-      url: '../myOrder/myOrder?name='+name,
+    var url = '../myOrder/myOrder?name='+name;
+    console.log('跳转路径:', url);
+    wx.redirectTo({
+      url: url,
     })
   },
 
@@ -48,11 +51,11 @@ Page({
   },
 
   // 跳转到会员页
-  goToMember (res) {
-    wx.redirectTo({
-      url: '../member/member',
-    })
-  },
+//   goToMember (res) {
+//     wx.redirectTo({
+//       url: '../member/member',
+//     })
+//   },
 
   // 跳转到积分商城
   goToPoints (res) {

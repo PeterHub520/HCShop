@@ -7,6 +7,13 @@
     background: linear-gradient(to top, #ffcc33, #ffd305);
     box-shadow: 0 0rpx 6rpx 0 #cfc9ca;
   }
+
+  .classify .body {
+    position: relative;
+    z-index: 1; /* 确保层级高于其他元素 */
+    padding: 20rpx; /* 增加点击区域范围 */
+    cursor: pointer; /* 显示点击手势 */
+  }
   .vip-user {
     width: 100%;
     display: flex;

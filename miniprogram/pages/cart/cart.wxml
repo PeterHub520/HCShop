@@ -10,8 +10,8 @@
       <text class="text_bottom">￥{{item.price}}</text>
     </view>
     <view class="right">
-      <text class="right_left" bindtap="reduce" >-</text>
-      <text class="right_middle">{{item.num}}</text>
+      <text class="right_left" bindtap="reduce" data-id="{{item._id}}">-</text>
+      <input type="digit" class="right_middle" value="{{item.num}}" bindinput="onNumInput" data-index="{{index}}" />
       <text class="right_right" bindtap="add" data-id="{{item._id}}">+</text>
     </view>
   </view>

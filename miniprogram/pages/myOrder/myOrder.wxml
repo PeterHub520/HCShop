@@ -4,16 +4,17 @@
   <view class="{{select == select_arr[2] ? 'select' : ''}}"  bindtap="select" data-state="已完成">已完成</view>
 </view>
 <view class="body">
-  <view class="all_order" wx:for="{{array}}" wx:key="index">
+  <!-- 为每个订单添加点击事件 bindtap="toOrderDetail" 和 data-id="{{item._id}}" -->
+  <view class="all_order" wx:for="{{array}}" wx:key="index" bindtap="toOrderDetail" data-id="{{item._id}}">
     <view class="text_1">
       <text class="_1">{{item.state}}</text>
       <text class="_2">{{item.time}}</text>
     </view>
     <view class="product" wx:for="{{item.product}}" wx:key="index">
-    <view class="product_left">
-      <image src="{{item.image}}"></image>
-      <text>{{item.name}}</text>
-    </view>
+      <view class="product_left">
+        <image src="{{item.image}}"></image>
+        <text>{{item.name}}</text>
+      </view>
       <text class="product_right">x{{item.num}}</text>
     </view>
     <view class="text">共{{item.product.length}}件,实付<text class="price">￥{{item.allMoney}}</text></view><text>积分：{{item.product[0].points}}</text>

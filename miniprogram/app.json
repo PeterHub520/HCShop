@@ -17,7 +17,8 @@
     "pages/address/address",
     "pages/address_detail/address_detail",
     "pages/shop_order/shop_order",
-    "pages/me/share/share"
+    "pages/me/share/share",
+    "pages/orderDetail/orderDetail"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -27,30 +28,32 @@
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "list": [{
-      "pagePath": "pages/index/index",
-      "text": "首页",
-      "iconPath": "icons/home.png",
-      "selectedIconPath": "icons/home.png"
-    },
-    {
-      "pagePath": "pages/classify/classify",
-      "text": "商品",
-      "iconPath": "icons/product.png",
-      "selectedIconPath": "icons/product.png"
-    },
-    {
-      "pagePath": "pages/cart/cart",
-      "text": "购物车",
-      "iconPath": "icons/cart.png",
-      "selectedIconPath": "icons/cart.png"
-    },
-    {
-      "pagePath": "pages/me/me",
-      "text": "我的",
-      "iconPath": "icons/me.png",
-      "selectedIconPath": "icons/me.png"
-    }]
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "icons/home.png",
+        "selectedIconPath": "icons/home.png"
+      },
+      {
+        "pagePath": "pages/classify/classify",
+        "text": "商品",
+        "iconPath": "icons/product.png",
+        "selectedIconPath": "icons/product.png"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "text": "购物车",
+        "iconPath": "icons/cart.png",
+        "selectedIconPath": "icons/cart.png"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的",
+        "iconPath": "icons/me.png",
+        "selectedIconPath": "icons/me.png"
+      }
+    ]
   },
   "usingComponents": {
     "van-button": "@vant/weapp/button/index",

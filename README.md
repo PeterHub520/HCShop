@@ -8,11 +8,12 @@
 * 数据表
 shopping_car：用于存储用户的购物车信息。
 address：用于存储用户的收货地址信息。
-order：用于存储用户的订单信息。
 product_shopping：用于存储商品信息。
 collection：用于存储用户的收藏信息。
 points_shopping：用于存储积分商城的商品信息。
+
 product_categories：分类
+order：用于存储用户的订单信息。
 
 ## TODO
 -  你应该能够找出点击 “待收货” 跳转到 pages/member/member 页面的原因。

@@ -9,7 +9,9 @@ Page({
     openid: '',
     array: [],    // 当前显示的订单列表
     all: [],      // 所有订单的缓存
-    score: 0
+    score: 0,
+    searchKeyword: '', // 搜索关键词
+    showSearch: false  // 是否显示搜索框
   },
 
   // 跳转到订单详情页
@@ -87,7 +89,35 @@ Page({
       filteredOrders = that.data.all.filter(item => item.state == state);
     }
     
+    // 如果有搜索关键词，应用搜索过滤
+    if (that.data.searchKeyword) {
+      filteredOrders = that.filterByKeyword(filteredOrders, that.data.searchKeyword);
+    }
+    
     that.setData({ array: filteredOrders });
+  },
+
+  // 根据关键词过滤订单
+  filterByKeyword(orders, keyword) {
+    if (!keyword) return orders;
+    
+    return orders.filter(order => {
+      // 搜索订单ID
+      if (order._id.includes(keyword)) return true;
+      
+      // 搜索订单状态
+      if (order.state && order.state.includes(keyword)) return true;
+      
+      // 搜索商品名称
+      if (order.product && order.product.some(product => 
+        product.name && product.name.includes(keyword)
+      )) return true;
+      
+      // 搜索时间
+      if (order.time && order.time.includes(keyword)) return true;
+      
+      return false;
+    });
   },
 
   // 更新积分
@@ -120,6 +150,27 @@ Page({
     var state = res.currentTarget.dataset.state;
     this.setData({ select: state });
     this.applyFilter(state);
+  },
+
+  // 切换搜索框显示状态
+  toggleSearch() {
+    this.setData({
+      showSearch: !this.data.showSearch,
+      searchKeyword: ''
+    }, () => {
+      // 搜索框关闭时重置列表
+      if (!this.data.showSearch) {
+        this.applyFilter(this.data.select);
+      }
+    });
+  },
+
+  // 搜索输入处理
+  onSearchInput(e) {
+    this.setData({
+      searchKeyword: e.detail.value
+    });
+    this.applyFilter(this.data.select);
   },
 
   /**
@@ -181,29 +232,66 @@ Page({
     }
   },
 
-  // 其他生命周期函数保持不变...
+  // 返回上一页
+  goBack() {
+    wx.navigateBack();
+  },
 
-    // 返回上一页
-    goBack() {
-        wx.navigateBack();
-      },
+  stopPropagation(e) {
+    // 空函数，仅用于阻止事件冒泡
+  },
+
+  deleteOrder(e) {
+    console.log("---,",e.currentTarget.dataset.id)
+    const that = this;
+    const orderId = e.currentTarget.dataset.id;
     
-      /**
-       * 用户点击右上角分享
-       */
-      onShareAppMessage() {
-        const order = this.data.orderData;
-        
-        return {
-          title: `订单分享：${order.id}`,
-          path: `/pages/orderDetail/orderDetail?id=${order._id}`,
-          imageUrl: order.product && order.product[0]?.image || '', // 使用第一个商品图片作为分享图
-          success: (res) => {
-            wx.showToast({ title: '分享成功', icon: 'success' });
-          },
-          fail: (err) => {
-            wx.showToast({ title: '分享失败', icon: 'none' });
-          }
-        };
+    wx.showModal({
+      title: '提示',
+      content: '确定要删除此订单吗？',
+      success(res) {
+        if (res.confirm) {
+          wx.showLoading({ title: '删除中...' });
+          
+          wx.cloud.callFunction({
+            name: 'deleteOrder',
+            data: {
+              id: orderId
+            },
+            success(res) {
+              console.log("订单删除成功");
+              wx.showToast({ title: '删除成功', icon: 'success' });
+              that.refreshOrderList(); // 刷新订单列表
+            },
+            fail(err) {
+              console.error("删除失败", err);
+              wx.showToast({ title: '删除失败', icon: 'none' });
+            },
+            complete() {
+              wx.hideLoading();
+            }
+          });
+        }
       }
-});
+    });
+  },
+    
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {
+    const order = this.data.orderData;
+    
+    return {
+      title: `订单分享：${order.id}`,
+      path: `/pages/orderDetail/orderDetail?id=${order._id}`,
+      imageUrl: order.product && order.product[0]?.image || '', // 使用第一个商品图片作为分享图
+      success: (res) => {
+        wx.showToast({ title: '分享成功', icon: 'success' });
+      },
+      fail: (err) => {
+        wx.showToast({ title: '分享失败', icon: 'none' });
+      }
+    };
+  }
+}); 

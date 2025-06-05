@@ -1,24 +1,33 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
-
 cloud.init()
-
 const db = cloud.database()
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  console.log(event);
+  const { id, name, fenlei, desc, price, image } = event
+  
   try {
-    return await db.collection('product_shopping').doc(event.id).update({
-      data:{
-        name:event.name,
-        fenlei:event.fenlei,
-        price:event.price,
-        desc:event.desc,
-        image:event.fileID
+    await db.collection('product_shopping').doc(id).update({
+      data: {
+        name,
+        fenlei,
+        desc,
+        price,
+        image,
+        updateTime: db.serverDate()
       }
     })
-  } catch (e) {
-    console.log(e)
+    
+    return {
+      status: 200,
+      message: '更新成功'
+    }
+  } catch (err) {
+    console.error('更新失败', err)
+    return {
+      status: 500,
+      message: '更新失败'
+    }
   }
 }

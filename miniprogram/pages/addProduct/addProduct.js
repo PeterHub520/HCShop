@@ -12,8 +12,8 @@ Page({
         selectedCategoryIndex: -1,
         isUploading: false,
         uploadProgress: 0,
-        oldFileID: '' // 用于保存编辑时的旧图片ID
-
+        oldFileID: '', // 用于保存编辑时的旧图片ID
+        productId: null // 用于保存编辑时的商品ID
     },
 
     getProductName(res) {
@@ -35,22 +35,22 @@ Page({
     },
 
     getPicture() {
-        if (this.data.isUploading) return
+        if (this.data.isUploading) return;
 
-        const that = this
-        const time = Date.now()
-        const random = Math.floor(Math.random() * 10000)
+        const that = this;
+        const time = Date.now();
+        const random = Math.floor(Math.random() * 10000);
 
         wx.chooseImage({
             count: 1,
             sizeType: ['compressed'],
             sourceType: ['album', 'camera'],
             success: function (res) {
-                const filePath = res.tempFilePaths[0]
+                const filePath = res.tempFilePaths[0];
                 that.setData({
                     isUploading: true,
                     uploadProgress: 0
-                })
+                });
 
                 const uploadTask = wx.cloud.uploadFile({
                     cloudPath: `products/${time}-${random}.${filePath.match(/\.(\w+)$/)[1]}`,
@@ -60,33 +60,33 @@ Page({
                         if (that.data.now === '修改' && that.data.fileID) {
                             that.setData({
                                 oldFileID: that.data.fileID
-                            })
+                            });
                         }
 
                         that.setData({
                             fileID: uploadRes.fileID,
                             isUploading: false
-                        })
+                        });
                     },
                     fail: function (err) {
-                        console.error("上传失败", err)
+                        console.error("上传失败", err);
                         that.setData({
                             isUploading: false
-                        })
+                        });
                         wx.showToast({
                             title: '上传失败',
                             icon: 'none'
-                        })
+                        });
                     }
-                })
+                });
 
                 uploadTask.onProgressUpdate((res) => {
                     that.setData({
                         uploadProgress: res.progress
-                    })
-                })
+                    });
+                });
             }
-        })
+        });
     },
 
     selectCategory(e) {
@@ -102,7 +102,7 @@ Page({
 
     // 提交表单
     submit() {
-        const that = this
+        const that = this;
         const {
             productName,
             productDesc,
@@ -110,18 +110,44 @@ Page({
             productPrice,
             fileID,
             now,
-            oldFileID
-        } = this.data
+            oldFileID,
+            productId
+        } = this.data;
+
+        // 验证表单数据
+        if (!productName) {
+            wx.showToast({
+                title: '请输入商品名称',
+                icon: 'none'
+            });
+            return;
+        }
+
+        if (!productFenlei) {
+            wx.showToast({
+                title: '请选择商品分类',
+                icon: 'none'
+            });
+            return;
+        }
+
+        if (!productPrice) {
+            wx.showToast({
+                title: '请输入商品价格',
+                icon: 'none'
+            });
+            return;
+        }
 
         if (!fileID) {
             wx.showToast({
                 title: '请上传商品图片',
                 icon: 'none'
-            })
-            return
+            });
+            return;
         }
 
-        const price = parseFloat(productPrice) || 0
+        const price = parseFloat(productPrice) || 0;
         const productData = {
             name: productName,
             fenlei: productFenlei,
@@ -129,69 +155,71 @@ Page({
             price: price,
             image: fileID,
             updateTime: db.serverDate()
-        }
+        };
 
         wx.showLoading({
             title: '处理中...',
             mask: true
-        })
+        });
 
         if (now === '修改') {
             // 编辑模式
-            productData.id = this.data.array._id
+            productData.id = productId;
 
             wx.cloud.callFunction({
                 name: 'updateProduct',
                 data: productData,
-                success: function () {
+                success: function (res) {
+                    console.log('更新成功', res);
                     // 更新成功后删除旧图片
                     if (oldFileID) {
                         wx.cloud.deleteFile({
                             fileList: [oldFileID],
                             success: () => console.log('旧图片删除成功'),
                             fail: err => console.error('旧图片删除失败', err)
-                        })
+                        });
                     }
 
-                    wx.hideLoading()
+                    wx.hideLoading();
                     wx.showToast({
                         title: '更新成功',
                         icon: 'success',
-                        duration: 2000,
+                        duration: 1000,
                         success: () => {
                             setTimeout(() => {
-                                wx.navigateBack()
-                            }, 2000)
+                                wx.navigateBack();
+                            }, 1000);
                         }
-                    })
+                    });
                 },
                 fail: (err) => {
-                    console.error("更新失败", err)
-                    wx.hideLoading()
+                    console.error("更新失败", err);
+                    wx.hideLoading();
                     wx.showToast({
                         title: '更新失败',
                         icon: 'none'
-                    })
+                    });
                 }
-            })
+            });
         } else {
             // 新增模式
-            productData.createTime = db.serverDate()
+            productData.createTime = db.serverDate();
 
             db.collection('product_shopping').add({
                 data: productData,
-                success: function () {
-                    wx.hideLoading()
+                success: function (res) {
+                    console.log('添加成功', res);
+                    wx.hideLoading();
                     wx.showToast({
                         title: '添加成功',
                         icon: 'success',
                         duration: 2000,
                         success: () => {
                             setTimeout(() => {
-                                wx.navigateBack()
-                            }, 2000)
+                                wx.navigateBack();
+                            }, 2000);
                         }
-                    })
+                    });
                 },
                 fail: (err) => {
                     // 新增失败时删除已上传的图片
@@ -199,17 +227,17 @@ Page({
                         wx.cloud.deleteFile({
                             fileList: [fileID],
                             fail: err => console.error('图片删除失败', err)
-                        })
+                        });
                     }
 
-                    console.error("添加失败", err)
-                    wx.hideLoading()
+                    console.error("添加失败", err);
+                    wx.hideLoading();
                     wx.showToast({
                         title: '添加失败',
                         icon: 'none'
-                    })
+                    });
                 }
-            })
+            });
         }
     },
 
@@ -218,24 +246,11 @@ Page({
         wx.previewImage({
             urls: [this.data.fileID],
             current: this.data.fileID
-        })
+        });
     },
-
 
     onLoad: function (options) {
         const that = this;
-
-        // 如果是编辑模式，初始化旧图片ID
-        if (options && options.id) {
-            try {
-                const productData = JSON.parse(decodeURIComponent(options.data))
-                this.setData({
-                    oldFileID: productData.image || ''
-                })
-            } catch (e) {
-                console.error('初始化旧图片ID失败', e)
-            }
-        }
 
         // 获取商品分类
         wx.cloud.callFunction({
@@ -265,7 +280,9 @@ Page({
                                 productPrice: productData.price ? productData.price.toString() : '',
                                 productFenlei: productData.fenlei || '',
                                 fileID: productData.image || '',
-                                selectedCategoryIndex: categoryIndex
+                                selectedCategoryIndex: categoryIndex,
+                                productId: productData._id || '',
+                                oldFileID: productData.image || '' // 初始化旧图片ID
                             });
                         } catch (e) {
                             console.error('解析商品数据失败', e);

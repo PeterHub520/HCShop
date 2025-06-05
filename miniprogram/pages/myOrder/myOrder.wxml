@@ -19,6 +19,7 @@
     </view>
     <view class="text">共{{item.product.length}}件,实付<text class="price">￥{{item.allMoney}}</text></view><text>积分：{{item.product[0].points}}</text>
     <view class="button">
+        
       <text class="{{item.state == '已完成' ? 'button_color':''}}" bindtap="ok" data-id="{{item._id}}" data-state="{{item.state}}">{{item.state == '待收货' ? '确认收货': '已完成'}}</text>
     </view>
   </view>

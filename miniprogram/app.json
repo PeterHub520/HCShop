@@ -24,7 +24,7 @@
     "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#F6F6F6",
-    "navigationBarTitleText": "小程序商城平台",
+    "navigationBarTitleText": "商城平台",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
